@@ -1,11 +1,11 @@
-## My Project
+# MKT210: Amazon VPC Traffic Mirroring Builder Session
 
-TODO: Fill this README out!
+This builder session:
 
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
+* Briefly goes over traffic mirroring capabilities in AWS cloud.
+* Allows you to understand Amazon VPC Traffic Mirroring in detail
+* Self paced activities allows you configure and learn fundamental components of
+Amazon VPC traffic mirroring
 
 ## License Summary
 
