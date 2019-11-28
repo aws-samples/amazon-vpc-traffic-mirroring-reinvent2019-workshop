@@ -1,0 +1,428 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  This template creates single-az, with single public subnet VPC infrastructure with
+  IGW in the public subnet for an Availability Zone. It also creates 4 EC2 instances
+  in public subnet. Instances are used for Amazon VPC Traffic Mirroring demo
+Metadata:
+  'AWS::CloudFormation::Interface':
+    ParameterGroups:
+      - Label:
+          default: Network Configuration
+        Parameters:
+          - VPCCidr
+      - Label:
+          default: EC2 Instance Configuration
+        Parameters:
+          - InstanceType
+          - InstanceDiskSize
+          - KeyPairName
+          - SSHLocation
+    ParameterLabels:
+      VPCCidr:
+        default: Enter Network CIDR for the new VPC
+      InstanceType:
+        default: EC2 instance type for bastion host
+      InstanceDiskSize:
+        default: EC2 instance size in GB
+      KeyPairName:
+        default: EC2 KeyPair required for accessing EC2 instance
+      SSHLocation:
+        default: Enter desired Network CIDR to access EC2 instance.
+Parameters:
+  VPCCidr:
+    AllowedPattern: >-
+      ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.0.0/16
+    Description: CIDR block for the VPC
+    Type: String
+  InstanceType:
+    Description: Select EC2 instance type for bastion host. Default is set to t2.micro
+    Default: c5n.large
+    AllowedValues:
+      - t2.micro
+      - c5n.large
+    Type: String
+  InstanceDiskSize:
+    Description: EC2 instance disk size in GB. Default is set to 15GB
+    Default: 15
+    AllowedValues:
+      - 8
+      - 15
+      - 25
+    Type: Number
+    ConstraintDescription: Should be a valid instance size in GB
+  KeyPairName:
+    Description: EC2 KeyPair required for accessing EC2 instance
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair.
+  SSHLocation:
+    Description: >-
+      Enter desired Network CIDR to access Bastion Host. Default is set to
+      access from anywhere and it is not recommended
+    AllowedPattern: '(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})'
+    MinLength: '9'
+    MaxLength: '18'
+    Default: 0.0.0.0/0
+    Type: String
+    ConstraintDescription: >-
+      Must be a valid Network CIDR of the form x.x.x.x/y. Default is set to
+      0.0.0.0/0, in production do not set default to 0.0.0.0/0
+Mappings:
+  ImageId:
+    us-east-1:
+      AmazonLinux2: ami-00dc79254d0461090
+      UbuntuCanonical: ami-04b9e92b5572fa0d1
+    us-east-2:
+      AmazonLinux2: ami-00bf61217e296b409
+      UbuntuCanonical: ami-0d5d9d301c853a04a
+    us-west-1:
+      AmazonLinux2: ami-024c80694b5b3e51a
+      UbuntuCanonical: ami-0dd655843c87b6930
+    us-west-2:
+      AmazonLinux2: ami-0a85857bfc5345c38
+      UbuntuCanonical: ami-06d51e91cea0dac8d
+    eu-west-1:
+      AmazonLinux2: ami-040ba9174949f6de4
+      UbuntuCanonical: ami-02df9ea15c1778c9c
+Resources:
+  VPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: !Ref VPCCidr
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: 'mkt210-vpc'
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
+        - Key: Name
+          Value: 'mkt210-igw'
+  AttachInternetGateway:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+  PublicSubnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !Join
+        - .
+        - - !Select
+            - 0
+            - !Split
+              - .
+              - !Ref VPCCidr
+          - !Select
+            - 1
+            - !Split
+              - .
+              - !Ref VPCCidr
+          - '1'
+          - !Join
+            - /
+            - - !Select
+                - 0
+                - !Split
+                  - /
+                  - !Select
+                    - 2
+                    - !Split
+                      - .
+                      - !Ref VPCCidr
+              - '24'
+      VpcId: !Ref VPC
+      MapPublicIpOnLaunch: 'true'
+      Tags:
+        - Key: Name
+          Value: 'mkt210-pubsub'
+  PublicRouteTable:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: 'mkt210-pubrt'
+  PublicRoute:
+    Type: 'AWS::EC2::Route'
+    DependsOn: AttachInternetGateway
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref PublicRouteTable
+  PublicSubnetRouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref PublicRouteTable
+  InstanceSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      VpcId: !Ref VPC
+      GroupName: 'mkt210-sg'
+      GroupDescription: >-
+        Allows SSH and ICMP SSHLocation, allow VXLAN within same security group
+      SecurityGroupIngress:
+        - CidrIp: !Ref SSHLocation
+          IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+        - CidrIp: !Ref SSHLocation
+          IpProtocol: ICMP
+          FromPort: '-1'
+          ToPort: '-1'
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: '-1'
+          FromPort: '-1'
+          ToPort: '-1'
+      Tags:
+        - Key: Name
+          Value: 'mkt210-sg'
+  InstanceSGIngress:
+    DependsOn: ['InstanceSG']
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref InstanceSG
+      SourceSecurityGroupId: !GetAtt InstanceSG.GroupId
+      IpProtocol: udp
+      FromPort: '4789'
+      ToPort: '4789'
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      RoleName: "awsnetworkshops-admin"
+  InstancePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: AdminAccessPolicy
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: '*'
+            Resource: '*'
+      Roles:
+        - !Ref InstanceRole
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: "awsnetworkshops-admin"
+      Path: /
+      Roles:
+        - !Ref InstanceRole
+  MgmtInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !FindInMap
+        - ImageId
+        - !Ref 'AWS::Region'
+        - AmazonLinux2
+      KeyName: !Ref KeyPairName
+      InstanceType: t2.micro
+      IamInstanceProfile: !Ref InstanceProfile
+      SecurityGroupIds:
+        - !Ref InstanceSG
+      SubnetId: !Ref PublicSubnet
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: !Ref InstanceDiskSize
+      Tags:
+        - Key: Name
+          Value: 'vpctm-mgmt-ec2'
+  ClientInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !FindInMap
+        - ImageId
+        - !Ref 'AWS::Region'
+        - AmazonLinux2
+      KeyName: !Ref KeyPairName
+      InstanceType: !Ref InstanceType
+      IamInstanceProfile: !Ref InstanceProfile
+      SecurityGroupIds:
+        - !Ref InstanceSG
+      SubnetId: !Ref PublicSubnet
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: !Ref InstanceDiskSize
+      Tags:
+        - Key: Name
+          Value: 'vpctm-client-ec2'
+  ServerInstance:
+    Type: 'AWS::EC2::Instance'
+    Metadata:
+      Comment1: "Configure simple webserver"
+      Comment2: "Save website content to /var/www/html/index.html"
+      AWS::CloudFormation::Init:
+        configSets:
+          Install:
+            - "Install"
+        Install:
+          files:
+            /var/www/html/index.html:
+              content: !Sub |
+                <html>
+                  <head>
+                    <title>MKT210: Amazon VPC Traffic Mirroring Demo</title>
+                    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+                  </head>
+                  <body>
+                    <h1>Welcome to MKT210: Amazon VPC Traffic Mirroring Demo</h1>
+                    <h2>This is a simple webserver running in ${AWS::Region}</h2>
+                  </body>
+                </html>
+              mode: "000755"
+              owner: "ec2-user"
+              group: "ec2-user"
+    Properties:
+      ImageId: !FindInMap
+        - ImageId
+        - !Ref 'AWS::Region'
+        - AmazonLinux2
+      KeyName: !Ref KeyPairName
+      InstanceType: !Ref InstanceType
+      IamInstanceProfile: !Ref InstanceProfile
+      SecurityGroupIds:
+        - !Ref InstanceSG
+      SubnetId: !Ref PublicSubnet
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: !Ref InstanceDiskSize
+      UserData:
+        'Fn::Base64': !Sub |
+          #!/bin/bash -xe
+          yum install -y aws-cfn-bootstrap
+          yum install httpd -y
+          systemctl start httpd
+          # Install the files from the metadata
+          /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --configsets Install --resource ServerInstance --region ${AWS::Region}
+      Tags:
+        - Key: Name
+          Value: 'vpctm-server-ec2'
+  IdsInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !FindInMap
+        - ImageId
+        - !Ref 'AWS::Region'
+        - UbuntuCanonical
+      KeyName: !Ref KeyPairName
+      InstanceType: !Ref InstanceType
+      IamInstanceProfile: !Ref InstanceProfile
+      SecurityGroupIds:
+        - !Ref InstanceSG
+      SubnetId: !Ref PublicSubnet
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: !Ref InstanceDiskSize
+      UserData:
+        'Fn::Base64': !Sub |
+          #!/bin/bash -xe
+          apt update -y
+          add-apt-repository -y ppa:oisf/suricata-stable
+          apt install -y suricata jq
+          sed -i 's/  - interface: eth0/  - interface: ens5/' /etc/suricata/suricata.yaml
+          sed -i 's/    \#use-mmap: yes/    use-mmap: yes/' /etc/suricata/suricata.yaml
+          sed -i 's/    \#tpacket-v3: yes/    tpacket-v3: yes/' /etc/suricata/suricata.yaml
+          suricata-update
+          systemctl stop suricata
+          rm /var/run/suricata.pid
+      Tags:
+        - Key: Name
+          Value: 'vpctm-ids-ec2'
+
+Outputs:
+  MgmtInstancePubIp:
+    Description: Mgmt Instance Public IP
+    Value: !GetAtt
+      - MgmtInstance
+      - PublicIp
+    Export:
+      Name: !Sub '${AWS::StackName}-MgmtInstancePubIp'
+  MgmtInstancePriIp:
+    Description: Mgmt Instance Private IP
+    Value: !GetAtt
+      - MgmtInstance
+      - PrivateIp
+    Export:
+      Name: !Sub '${AWS::StackName}-MgmtInstancePriIp'
+  ClientInstancePubIp:
+    Description: Client Instance Public IP
+    Value: !GetAtt
+      - ClientInstance
+      - PublicIp
+    Export:
+      Name: !Sub '${AWS::StackName}-ClientInstancePubIp'
+  ClientInstancePriIp:
+    Description: Client Instance Private IP
+    Value: !GetAtt
+      - ClientInstance
+      - PrivateIp
+    Export:
+      Name: !Sub '${AWS::StackName}-ClientInstancePriIp'
+  ServerInstancePubIp:
+    Description: Server Instance Public IP
+    Value: !GetAtt
+      - ServerInstance
+      - PublicIp
+    Export:
+      Name: !Sub '${AWS::StackName}-ServerInstancePubIp'
+  ServerInstancePriIp:
+    Description: Server Instance Private IP
+    Value: !GetAtt
+      - ServerInstance
+      - PrivateIp
+    Export:
+      Name: !Sub '${AWS::StackName}-ServerInstancePriIp'
+  IdsInstancePubIp:
+    Description: IDS Instance Public IP
+    Value: !GetAtt
+      - IdsInstance
+      - PublicIp
+    Export:
+      Name: !Sub '${AWS::StackName}-IdsInstancePubIp'
+  IdsInstancePriIp:
+    Description: IDS Instance Private IP
+    Value: !GetAtt
+      - IdsInstance
+      - PrivateIp
+    Export:
+      Name: !Sub '${AWS::StackName}-IdsInstancePriIp'
+  PublicSubnetId:
+    Description: MKT210 Public Subnet ID
+    Value: !Ref PublicSubnet
+    Export:
+      Name: !Sub '${AWS::StackName}-PublicSubnetID'
+  InstanceSG:
+    Description: EC2 Instance Security Group
+    Value: !Ref InstanceSG
+    Export:
+      Name: !Sub '${AWS::StackName}-InstanceSG'
+  VPCCidr:
+    Description: VPC CIDR
+    Value: !Ref VPCCidr
+    Export:
+      Name: !Sub '${AWS::StackName}-VPCCidr'
+  VPCId:
+    Description: VPC ID
+    Value: !Ref VPC
+    Export:
+      Name: !Sub '${AWS::StackName}-VPCID'

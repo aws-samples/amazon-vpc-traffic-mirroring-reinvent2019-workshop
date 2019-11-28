@@ -1,0 +1,8 @@
+---
+title: "Ireland"
+chapter: false
+disableToc: true
+hidden: true
+---
+
+[CloudFormation console in eu-west-1](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=vpc-tm-infra-setup&templateURL=https://net410-workshop-us-west-2.s3-us-west-2.amazonaws.com/awsk8snetworking-cluster-mgmt-cloud9.yaml)
