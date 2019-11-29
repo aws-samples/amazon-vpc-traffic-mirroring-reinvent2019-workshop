@@ -1,6 +1,5 @@
 +++
 title = "Create Infrastructure"
-date = 2019-11-25T15:26:27-08:00
 weight = 10
 pre = "<b>1. </b>"
 +++
@@ -29,3 +28,8 @@ Upon successful creation of CloudFormation stack, you will have following resour
   1. Acting as client
   2. Acting as server
   3. Acting as destination for mirrored traffic
+
+<!--
+Another way is to use button instead of tabs shortcode:
+{{% button href="https://issues.amazon.com/issues/create?template=f084dc94-e920-4d98-80f7-252d5cc7ce00" icon="fas fa-envelope" %}}Launch in Singapore{{% /button %}}
+-->

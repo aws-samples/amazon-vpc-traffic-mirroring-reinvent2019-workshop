@@ -1,8 +1,10 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   This template creates single-az, with single public subnet VPC infrastructure with
-  IGW in the public subnet for an Availability Zone. It also creates 4 EC2 instances
-  in public subnet. Instances are used for Amazon VPC Traffic Mirroring demo
+  IGW in the public subnet for an Availability Zone. It also creates 3 EC2 instances
+  in public subnet. Instances are used for Amazon VPC Traffic Mirroring demo. Instances
+  are assigned private ip address. If you are not using default 10.0.0.0/16,
+  change/remove private ip address accordingly or else template create will fail.
 Metadata:
   'AWS::CloudFormation::Interface':
     ParameterGroups:
@@ -37,11 +39,16 @@ Parameters:
     Description: CIDR block for the VPC
     Type: String
   InstanceType:
-    Description: Select EC2 instance type for bastion host. Default is set to t2.micro
-    Default: c5n.large
+    Description: >-
+      Select EC2 instance type. Default is set to t3.medium. As of today only
+      nitro based instance are supported for traffic mirroring.
+    Default: t3.medium
     AllowedValues:
-      - t2.micro
+      - t3.small
+      - t3.medium
+      - t3.large
       - c5n.large
+      - c5n.xlarge
     Type: String
   InstanceDiskSize:
     Description: EC2 instance disk size in GB. Default is set to 15GB
@@ -55,11 +62,13 @@ Parameters:
   KeyPairName:
     Description: EC2 KeyPair required for accessing EC2 instance
     Type: 'AWS::EC2::KeyPair::KeyName'
+    Default: 'k8sAdmin'
     ConstraintDescription: Must be the name of an existing EC2 KeyPair.
   SSHLocation:
     Description: >-
-      Enter desired Network CIDR to access Bastion Host. Default is set to
-      access from anywhere and it is not recommended
+      Enter desired Network CIDR to access EC2 instance. Default is set to
+      access from anywhere and it is not recommended. Please change to appropriate
+      CIDR.
     AllowedPattern: '(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})'
     MinLength: '9'
     MaxLength: '18'
@@ -184,7 +193,7 @@ Resources:
       Tags:
         - Key: Name
           Value: 'mkt210-sg'
-  InstanceSGIngress:
+  InstanceVXLANIngress:
     DependsOn: ['InstanceSG']
     Type: 'AWS::EC2::SecurityGroupIngress'
     Properties:
@@ -193,6 +202,15 @@ Resources:
       IpProtocol: udp
       FromPort: '4789'
       ToPort: '4789'
+  InstanceHTTPIngress:
+    DependsOn: ['InstanceSG']
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref InstanceSG
+      SourceSecurityGroupId: !GetAtt InstanceSG.GroupId
+      IpProtocol: tcp
+      FromPort: '80'
+      ToPort: '80'
   InstanceRole:
     Type: AWS::IAM::Role
     Properties:
@@ -224,26 +242,6 @@ Resources:
       Path: /
       Roles:
         - !Ref InstanceRole
-  MgmtInstance:
-    Type: 'AWS::EC2::Instance'
-    Properties:
-      ImageId: !FindInMap
-        - ImageId
-        - !Ref 'AWS::Region'
-        - AmazonLinux2
-      KeyName: !Ref KeyPairName
-      InstanceType: t2.micro
-      IamInstanceProfile: !Ref InstanceProfile
-      SecurityGroupIds:
-        - !Ref InstanceSG
-      SubnetId: !Ref PublicSubnet
-      BlockDeviceMappings:
-        - DeviceName: /dev/xvda
-          Ebs:
-            VolumeSize: !Ref InstanceDiskSize
-      Tags:
-        - Key: Name
-          Value: 'vpctm-mgmt-ec2'
   ClientInstance:
     Type: 'AWS::EC2::Instance'
     Properties:
@@ -261,6 +259,7 @@ Resources:
         - DeviceName: /dev/xvda
           Ebs:
             VolumeSize: !Ref InstanceDiskSize
+      PrivateIpAddress: "10.0.1.22"
       Tags:
         - Key: Name
           Value: 'vpctm-client-ec2'
@@ -305,6 +304,7 @@ Resources:
         - DeviceName: /dev/xvda
           Ebs:
             VolumeSize: !Ref InstanceDiskSize
+      PrivateIpAddress: "10.0.1.21"
       UserData:
         'Fn::Base64': !Sub |
           #!/bin/bash -xe
@@ -333,6 +333,7 @@ Resources:
         - DeviceName: /dev/xvda
           Ebs:
             VolumeSize: !Ref InstanceDiskSize
+      PrivateIpAddress: "10.0.1.20"
       UserData:
         'Fn::Base64': !Sub |
           #!/bin/bash -xe
@@ -350,20 +351,6 @@ Resources:
           Value: 'vpctm-ids-ec2'
 
 Outputs:
-  MgmtInstancePubIp:
-    Description: Mgmt Instance Public IP
-    Value: !GetAtt
-      - MgmtInstance
-      - PublicIp
-    Export:
-      Name: !Sub '${AWS::StackName}-MgmtInstancePubIp'
-  MgmtInstancePriIp:
-    Description: Mgmt Instance Private IP
-    Value: !GetAtt
-      - MgmtInstance
-      - PrivateIp
-    Export:
-      Name: !Sub '${AWS::StackName}-MgmtInstancePriIp'
   ClientInstancePubIp:
     Description: Client Instance Public IP
     Value: !GetAtt

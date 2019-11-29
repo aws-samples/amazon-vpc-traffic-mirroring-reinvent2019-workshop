@@ -1,10 +1,16 @@
 +++
-title = "Network Load Balancer as a target"
+title = "Use open source tool"
 chapter = true
 weight = 20
 pre = "<b>4. </b>"
 draft = false
 +++
 
-* You might want to use single target for multiple sources. In doing so target can become resource constrained. In this activity we explore how you can use scale target by front ending them with a network load balancer (NLB) and use NLB as a target instead. At the end of this activity you will learn how to successfully configure NLB as a target
-* Activity has sections for both console and aws cli.
+# Objective:
+
+You can use open-source tools to monitor network traffic from Amazon EC2 instances. In this activity we will briefly go over how to use Suricata. For more information see the [Suricata website](https://suricata-ids.org/).
+
+* We will build on top of previous activity: [Setup VPC Traffic Mirroring](/030_module1/)
+* Suricata is already installed on the destination instance
+* We will configure http rule on Suricata.
+* From client we will initiate port 80 (http) traffic and look at the logs to see http rule being triggered.

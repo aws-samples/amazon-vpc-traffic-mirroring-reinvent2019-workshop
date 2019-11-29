@@ -8,5 +8,3 @@ disableToc: true
 <!---
 note: change the url to match the new repo... using old repo as an example placeholder
 --->
-
-{{% ghcontributors "https://api.github.com/repos/pmankad96/amazon-vpc-traffic-mirroring-workshop/contributors" %}}

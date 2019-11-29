@@ -28,7 +28,11 @@ template_bucket = "awsnetworkshops.com"
 pygmentsUseClasses = true
 pygmentsCodeFences = true
 pygmentsCodefencesGuessSyntax = true
-pygmentsStyle = "monakai"
+pygmentsStyle = "tango"
+
+[[params.customCSS]]
+  href = "css/custom.css"
+
 
 [menu]
   [[menu.main]]
