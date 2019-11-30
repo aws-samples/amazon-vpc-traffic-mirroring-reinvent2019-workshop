@@ -1,8 +1,10 @@
-+++
-title = "MKT210: Amazon VPC Traffic Mirroring Builder Session"
-chapter = true
-weight = 1
-+++
+---
+title: "MKT210 - Amazon VPC Traffic Mirroring Builder Session"
+chapter: true
+weight: 1
+---
+
+# MKT210 - Amazon VPC Traffic Mirroring Builder Session
 
 ![Amazon VPC Traffic Mirroring](/images/AwsVpcTm.png)
 
