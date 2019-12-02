@@ -1,8 +1,8 @@
 +++
 title = "Network Load Balancer as a target"
 chapter = true
-weight = 25
-pre = "<b>5. </b>"
+weight = 30
+pre = "<b>6. </b>"
 draft = false
 +++
 

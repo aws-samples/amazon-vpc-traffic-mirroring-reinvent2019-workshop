@@ -1,8 +1,8 @@
 +++
 title = "Setup VPC Traffic Mirroring"
 chapter = true
-weight = 15
-pre = "<b>3. </b>"
+weight = 20
+pre = "<b>4. </b>"
 draft = false
 +++
 

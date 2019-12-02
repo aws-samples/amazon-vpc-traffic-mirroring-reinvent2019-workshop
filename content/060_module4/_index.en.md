@@ -1,8 +1,8 @@
 +++
 title = "Automate your VPC Traffic Mirroring Setup"
 chapter = true
-weight = 30
-pre = "<b>6. </b>"
+weight = 35
+pre = "<b>7. </b>"
 draft = false
 +++
 

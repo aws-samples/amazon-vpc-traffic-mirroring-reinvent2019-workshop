@@ -10,13 +10,19 @@ pre = "<b>1. </b>"
 Before you deploy the CloudFormation template, feel free to view it [here](https://github.com/pmankad96/amazon-vpc-traffic-mirroring-workshop/tree/master/templates/aws-vpc-tm-pub-single-az-all-builtin.yaml)
 {{% /notice %}}
 
-### Launch infrastructure using CloudFormation template in the recommended region:
+#### Launch infrastructure using CloudFormation template in the recommended region:
+{{% tabs name="Region" %}}
+{{{% tab name="Oregon" include="cfn-us-west-2.md" /%}}
+{{% /tabs %}}
+
+<!--
 {{% tabs name="Region" %}}
 {{{% tab name="Ohio" include="cfn-us-east-2.md" /%}}
 {{{% tab name="Oregon" include="cfn-us-west-2.md" /%}}
 {{{% tab name="Ireland" include="cfn-eu-west-1.md" /%}}
 {{{% tab name="Singapore" include="cfn-ap-southeast-1.md" /%}}
 {{% /tabs %}}
+-->
 
 Upon successful creation of CloudFormation stack, you will have following resources created:
 
