@@ -9,8 +9,12 @@ Mirrored traffic is sent to destination. In this activity we will configure [Ama
 
 1. Launch Amazon VPC console in the region where you have [created infrastructure](/010_prerequisites/createinfra):
 
+  * {{% button href="https://us-west-2.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Oregon{{% /button %}}
+
+<!--
   * {{% button href="https://us-east-2.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Ohio{{% /button %}} {{% button href="https://us-west-2.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Oregon{{% /button %}} {{% button href="https://eu-west-1.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Ireland{{% /button %}}
   ![amazonVpcConsole](/images/amazonVpcConsole.png)
+-->
 
 2. On the left navigation pane, scroll down and choose Traffic Mirroring, Mirror Targets:
 ![selectTarget](/images/scrollDownTarget.png)
@@ -29,7 +33,11 @@ Mirrored traffic is sent to destination. In this activity we will configure [Ama
 
   * For this activity we have already created an instance that will act as a target. Click on the link in recommended region:
 
-      * {{% button href="https://us-east-2.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-ids-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ohio{{% /button %}} {{% button href="https://us-west-2.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-ids-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Oregon{{% /button %}} {{% button href="https://eu-west-1.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-ids-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ireland{{% /button %}}
+      * {{% button href="https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Instances:search=vpctm-ids-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Oregon{{% /button %}}
+
+<!--
+      * {{% button href="https://us-east-2.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-ids-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ohio{{% /button %}} {{% button href="https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Instances:search=vpctm-ids-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Oregon{{% /button %}} {{% button href="https://eu-west-1.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-ids-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ireland{{% /button %}}
+-->
 
   * Click on **Network Interface    eth0** and it will display the ENI
   ![selectENI](/images/selectENI.png)

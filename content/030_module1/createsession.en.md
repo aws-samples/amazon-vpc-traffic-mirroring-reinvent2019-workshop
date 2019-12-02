@@ -10,8 +10,12 @@ Up until this point we have created traffic mirror target - mirrored traffic is 
 
 1. Launch Amazon VPC console in the region where you have created your [target](/030_module1/createtarget/) and [filter](/030_module1/createfilter/):
 
+  * {{% button href="https://us-west-2.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Oregon{{% /button %}}
+
+<!--
   * {{% button href="https://us-east-2.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Ohio{{% /button %}} {{% button href="https://us-west-2.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Oregon{{% /button %}} {{% button href="https://eu-west-1.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Ireland{{% /button %}}
   ![amazonVpcConsole](/images/amazonVpcConsole.png)
+-->
 
 2. On the left navigation pane, scroll down and choose Traffic Mirroring, Mirror Session:
 ![selectFilter](/images/scrollDownSession.png)
@@ -22,9 +26,9 @@ Up until this point we have created traffic mirror target - mirrored traffic is 
 4. Enter value as show below and choose create traffic mirror session:
   * For mirror source, choose the network interface of the instance that you want to monitor.
       * For this activity we have already created an instance that will act as a source. Click on the link in recommended region:
-          * {{% button href="https://us-east-2.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-server-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ohio{{% /button %}} {{% button href="https://us-west-2.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-server-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Oregon{{% /button %}} {{% button href="https://eu-west-1.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-server-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ireland{{% /button %}}
+          * {{% button href="https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Instances:search=vpctm-server-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Oregon{{% /button %}}
 
-      * Click on **Network Interface    eth0** and it will display the ENI
+      * Click on **Network Interface eth0** and it will display the ENI
       ![selectENISession](/images/selectENISession.png)
 
   * For mirror target, choose the traffic mirror target.
@@ -34,3 +38,7 @@ Up until this point we have created traffic mirror target - mirrored traffic is 
 
 5. At this point you should have your filter successfully created:
 ![createTargetComplete](/images/createSessionComplete.png)
+
+<!--
+          * {{% button href="https://us-east-2.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-server-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ohio{{% /button %}} {{% button href="https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Instances:search=vpctm-server-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Oregon{{% /button %}} {{% button href="https://eu-west-1.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-server-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ireland{{% /button %}}
+-->

@@ -9,8 +9,12 @@ A traffic mirror filter contains one or more traffic mirror rules, and a set of 
 
 1. Launch Amazon VPC console in the region where you have created your [target](/030_module1/createtarget/):
 
+  * {{% button href="https://us-west-2.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Oregon{{% /button %}}
+
+<!--
   * {{% button href="https://us-east-2.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Ohio{{% /button %}} {{% button href="https://us-west-2.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Oregon{{% /button %}} {{% button href="https://eu-west-1.console.aws.amazon.com/vpc/" icon="fas fa-external-link-alt" %}}Amazon VPC console in Ireland{{% /button %}}
   ![amazonVpcConsole](/images/amazonVpcConsole.png)
+-->
 
 2. On the left navigation pane, scroll down and choose Traffic Mirroring, Mirror Filters:
 ![selectFilter](/images/scrollDownFilter.png)

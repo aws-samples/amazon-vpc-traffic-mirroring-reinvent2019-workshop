@@ -62,7 +62,7 @@ Parameters:
   KeyPairName:
     Description: EC2 KeyPair required for accessing EC2 instance
     Type: 'AWS::EC2::KeyPair::KeyName'
-    Default: 'k8sAdmin'
+    Default: 'ee-default-keypair'
     ConstraintDescription: Must be the name of an existing EC2 KeyPair.
   SSHLocation:
     Description: >-

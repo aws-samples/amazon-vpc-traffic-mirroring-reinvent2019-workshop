@@ -18,11 +18,16 @@ weight: 20
 4. Enter 12-character **Participant Hash** provided to you in the dashboard:
 ![eedashboardhas](/images/eedashboardhash.png)
 
-5. Please note the region that the event is using. Only actions in this region are allowed.
+5. Click the AWS Console link to login to the AWS account you’ll use in today’s event
+![awsConsoleLink](/images/awsConsoleLink.png)
+
+8. Please note the region that the event is using. Only actions in this region are allowed.
   1. Click the ‘Open AWS Console’ button to open the AWS Console. You can also copy and paste the credentials through the ‘Copy Login Link’ into your terminal window if you need to use the AWS CLI
   2. Set up your environment using the instructions in the Credentials/CLI Snippets section depending on your platform (Mac/Linux or Windows)
-![eeawsconsolelogin](/images/eeawsconsolelogin.png)
+  ![eeawsconsolelogin](/images/eeawsconsolelogin.png)
 
+7. Click on the SSH key button and download the SSH Keypair PEM file to SSH into EC2 instances as required.
+![eeSshKey](/images/eeSshKey.png)
 
 
 Once you have completed the step above, you can head straight to [**Create a Workspace**](/prerequisites/createworkspace/)
