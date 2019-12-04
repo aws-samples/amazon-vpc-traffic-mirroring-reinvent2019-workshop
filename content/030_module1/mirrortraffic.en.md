@@ -24,7 +24,7 @@ We will use ssh to access EC2 instances. Along with public ip, you will need ssh
 
 1. Access client instance:
   * Depending on the region where you have [created infrastructure](/010_prerequisites/createinfra), find out public ip of the client instance:
-    * {{% button href="https://us-east-2.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-client-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ohio{{% /button %}} {{% button href="https://us-west-2.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-client-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Oregon{{% /button %}} {{% button href="https://eu-west-1.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-client-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ireland{{% /button %}}
+  * {{% button href="https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Instances:search=vpctm-client-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}} Oregon {{% /button %}}
     ![clientInstancePublicIp](/images/clientInstancePublicip.png)
 
   * SSH to client instance, make sure to user appropriate ssh key-pair and public ip:
@@ -53,7 +53,7 @@ We will use ssh to access EC2 instances. Along with public ip, you will need ssh
 
 2. Access destination instance.
   * Depending on the region where you have [created infrastructure](/010_prerequisites/createinfra), find out public ip of the destination instance:
-    * {{% button href="https://us-east-2.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-ids-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ohio{{% /button %}} {{% button href="https://us-west-2.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-ids-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Oregon{{% /button %}} {{% button href="https://eu-west-1.console.aws.amazon.com/ec2/home?region=eu-west-1#Instances:search=vpctm-ids-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Ireland{{% /button %}}
+    * {{% button href="https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Instances:search=vpctm-ids-ec2;instanceState=running,stopped;sort=instanceId"icon="fas fa-external-link-alt" %}}Oregon{{% /button %}}
     ![destinationInstancePublicIp](/images/destinationInstancePublicip.png)
 
   * SSH to destination instance, make sure to user appropriate ssh key-pair and public ip. Also make note of user **ubuntu** vs ec2-user:
