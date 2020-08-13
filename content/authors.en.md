@@ -5,8 +5,6 @@ disableToc: true
 
 ### Thanks to our wonderful contributors <i class="fas fa-heart"></i> for making Open Source a better place!
 
-* [**pmankad96**](https://github.com/pmankad96)
-
 * {{% ghcontributors "https://api.github.com/repos/aws-samples/amazon-vpc-traffic-mirroring-reinvent2019-workshop/contributors" %}}
 
 <!---
