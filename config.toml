@@ -12,7 +12,8 @@ relativeURLs = true
 hrefTargetBlank = true
 
 [params]
-editURL = "https://github.com/pmankad96/amazon-vpc-traffic-mirroring-workshop/edit/master/content/"
+editURL = "https://github.com/aws-samples/amazon-vpc-traffic-mirroring-reinvent2019-workshop/edit/master/content"
+#editURL = "https://github.com/pmankad96/amazon-vpc-traffic-mirroring-workshop/edit/master/content/"
 themeVariant = "mine"
 showVisitedLinks = false
 author = "Pratik M"
