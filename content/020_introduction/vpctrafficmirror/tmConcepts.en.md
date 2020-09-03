@@ -5,7 +5,7 @@ pre: "<b>1. </b>"
 draft: false
 ---
 
-#### Their are three Traffic Mirroring components:
+#### Traffic Mirroring components:
 
 ![whatisamazonvpctm](/images/threeComponentsTm.png)
 
