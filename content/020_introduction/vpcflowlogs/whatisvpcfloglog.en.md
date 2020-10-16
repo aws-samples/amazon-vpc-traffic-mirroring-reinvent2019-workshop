@@ -7,4 +7,3 @@ draft: false
 
 ![whatisamazonvpcflowlogs](/images/whatIsVpcFlowLogs.png)
 
-#### Add brief explanation here

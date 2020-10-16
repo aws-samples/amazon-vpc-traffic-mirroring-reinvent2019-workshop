@@ -7,7 +7,7 @@ pre = "<b>1. </b>"
 ### Create infrastructure required for the session:
 
 {{% notice info %}}
-Before you deploy the CloudFormation template, feel free to view it [here](https://github.com/pmankad96/amazon-vpc-traffic-mirroring-workshop/tree/master/templates/aws-vpc-tm-pub-single-az-all-builtin.yaml)
+Before you deploy the CloudFormation template, feel free to view it [here](https://github.com/aws-samples/amazon-vpc-traffic-mirroring-reinvent2019-workshop/blob/master/templates/aws-vpc-tm-pub-single-az-all-builtin.yaml)
 {{% /notice %}}
 
 #### Launch infrastructure using CloudFormation template in the recommended region:
